@@ -1,0 +1,32 @@
+CREATE TABLE emp_salary
+(
+    emp_id INTEGER  NOT NULL,
+    name NVARCHAR2(20)  NOT NULL,
+    salary NVARCHAR2(30),
+    dept_id INTEGER
+);
+
+
+INSERT INTO emp_salary (emp_id, name, salary, dept_id) VALUES(101, 'sohan', '3000', '11');
+INSERT INTO emp_salary (emp_id, name, salary, dept_id) VALUES(102, 'rohan', '4000', '12');
+INSERT INTO emp_salary (emp_id, name, salary, dept_id) VALUES(103, 'mohan', '5000', '13');
+INSERT INTO emp_salary (emp_id, name, salary, dept_id) VALUES(104, 'cat', '3000', '11');
+INSERT INTO emp_salary (emp_id, name, salary, dept_id) VALUES(105, 'suresh', '4000', '12');
+INSERT INTO emp_salary (emp_id, name, salary, dept_id) VALUES(109, 'mahesh', '7000', '12');
+INSERT INTO emp_salary (emp_id, name, salary, dept_id) VALUES(108, 'kamal', '8000', '11');
+
+---FIND THE EMP WITH SAME SALARY IN THE DEPT.
+
+-------------SOLUTION
+
+
+WITH CTE AS (
+SELECT DEPT_ID,SALARY
+FROM emp_salary
+GROUP BY DEPT_ID,SALARY
+HAVING COUNT(1)=1)
+
+SELECT * 
+FROM emp_salary EMP LEFT JOIN CTE
+ON CTE.DEPT_ID=EMP.DEPT_ID AND CTE.SALARY=EMP.SALARY
+WHERE CTE.DEPT_ID IS NULL;
