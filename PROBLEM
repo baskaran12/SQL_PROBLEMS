@@ -1,0 +1,42 @@
+create table players
+(player_id int,
+group_id int)
+
+insert into players values (15,1);
+insert into players values (25,1);
+insert into players values (30,1);
+insert into players values (45,1);
+insert into players values (10,2);
+insert into players values (35,2);
+insert into players values (50,2);
+insert into players values (20,3);
+insert into players values (40,3);
+
+create table matches
+(
+match_id int,
+first_player int,
+second_player int,
+first_score int,
+second_score int)
+
+insert into matches values (1,15,45,3,0);
+insert into matches values (2,30,25,1,2);
+insert into matches values (3,30,15,2,0);
+insert into matches values (4,40,20,5,2);
+insert into matches values (5,35,50,1,1);
+
+---------------FIND THE PLAYER WITH MAX RUN IN EACH GROUP.IN CASE TIE,PICK THE LOWEST PLAYER ID
+--------SOLUTION
+
+WITH CTE AS (
+SELECT P.GROUP_ID,P.PLAYER_ID,
+    SUM(CASE WHEN P.PLAYER_ID=M.FIRST_PLAYER THEN M.FIRST_SCORE WHEN P.PLAYER_ID=SECOND_PLAYER THEN SECOND_SCORE END) FINAL_SCORE,
+    ROW_NUMBER () OVER (PARTITION BY P.GROUP_ID ORDER BY P.GROUP_ID) RN
+    FROM PLAYERS P, MATCHES M
+    WHERE P.PLAYER_ID=M.FIRST_PLAYER OR P.PLAYER_ID=M.SECOND_PLAYER
+    GROUP BY P.GROUP_ID,P.PLAYER_ID
+    ORDER BY P.GROUP_ID,FINAL_SCORE DESC,PLAYER_ID )
+
+SELECT * FROM CTE
+	WHERE RN=1;
