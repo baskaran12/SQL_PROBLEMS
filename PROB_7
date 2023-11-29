@@ -1,0 +1,40 @@
+create table orders
+(
+order_id int,
+customer_id int,
+product_id int,
+);
+
+insert into orders VALUES 
+(1, 1, 1),
+(1, 1, 2),
+(1, 1, 3),
+(2, 2, 1),
+(2, 2, 2),
+(2, 2, 4),
+(3, 1, 5);
+
+create table products (
+id int,
+name varchar(10)
+);
+insert into products VALUES 
+(1, 'A'),
+(2, 'B'),
+(3, 'C'),
+(4, 'D'),
+(5, 'E');
+
+-------FIND THE PRODUCTS PAIR
+----------SOLUTION
+
+WITH CTE AS (
+SELECT ORDER_ID,CUSTOMER_ID,NAME,ROW_NUMBER () OVER (ORDER BY ORDER_ID,CUSTOMER_ID) RN FROM orders O,PRODUCTS P
+	WHERE O.PRODUCT_ID=P.ID)
+
+SELECT  A.NAME,B.NAME ,COUNT (1)
+FROM CTE A, CTE B
+WHERE A.ORDER_ID=B.ORDER_ID AND A.CUSTOMER_ID=B.CUSTOMER_ID AND A.RN<B.RN
+    GROUP BY A.NAME,B.NAME
+    ORDER BY COUNT (1) DESC;
+	
