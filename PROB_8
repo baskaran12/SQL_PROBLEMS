@@ -1,0 +1,23 @@
+create and insert script for this problem. Do try yourself without using CTE.
+
+create table sales (
+product_id int,
+period_start date,
+period_end date,
+average_daily_sales int
+);
+
+insert into sales values(1,'2019-01-25','2019-02-28',100),(2,'2018-12-01','2020-01-01',10),(3,'2019-12-01','2020-01-31',1);
+
+---------SOLUTION
+WITH CTE (ID,START_DT,END_DT,SALE) AS(
+SELECT PRODUCT_ID,PERIOD_START,PERIOD_END,AVERAGE_DAILY_SALES
+ 	FROM sales
+UNION ALL
+SELECT ID,START_DT+1,END_DT,SALE
+    FROM CTE
+    WHERE START_DT<END_DT)
+    
+SELECT  ID, TO_CHAR (START_DT,'YYYY') START_DT,SUM (SALE) FROM CTE
+    GROUP BY ID,TO_CHAR (START_DT,'YYYY')
+    ORDER BY 1,2;
