@@ -1,0 +1,32 @@
+create table customer_orders (
+order_id integer,
+customer_id integer,
+order_date date,
+order_amount integer
+);
+select * from customer_orders
+insert into customer_orders values(1,100,cast('2022-01-01' as date),2000),(2,200,cast('2022-01-01' as date),2500),(3,300,cast('2022-01-01' as date),2100)
+,(4,100,cast('2022-01-02' as date),2000),(5,400,cast('2022-01-02' as date),2200),(6,500,cast('2022-01-02' as date),2700)
+,(7,100,cast('2022-01-03' as date),3000),(8,400,cast('2022-01-03' as date),1000),(9,600,cast('2022-01-03' as date),3000)
+
+----solution 
+
+WITH TOTAL_CUST AS (
+SELECT ORDER_DATE , COUNT (DISTINCT CUSTOMER_ID) CUST_CNT 
+  FROM ORDERS
+GROUP BY ORDER_DATE),
+
+
+
+NEW_CUST AS (
+
+  SELECT ORDER_DATE,COUNT (DISTINCT CUSTOMER_ID) CNT FROM ORDERS O1
+  WHERE NOT EXISTS (SELECT 1 FROM ORDERS O2 WHERE O2.CUSTOMER_ID=O1.CUSTOMER_ID AND O2.ORDER_DATE<O1.ORDER_DATE)
+GROUP BY ORDER_DATE
+
+)
+
+
+SELECT C1.ORDER_DATE,C2.CNT NEW_CUST_CNT,C1.CUST_CNT-C2.CNT REPEAT_CUST_CNT
+FROM TOTAL_CUST C1, NEW_CUST C2
+WHERE C1.ORDER_DATE=C2.ORDER_DATE;
