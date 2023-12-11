@@ -1,0 +1,24 @@
+create table products
+(
+product_id varchar(20) ,
+cost int
+);
+insert into products values ('P1',200),('P2',300),('P3',500),('P4',800);
+
+create table customer_budget
+(
+customer_id int,
+budget int
+);
+
+insert into customer_budget values (100,400),(200,800),(300,1500);
+
+-------------SOLUTION
+
+    
+SELECT CUSTOMER_ID,BUDGET,
+    COUNT(PRODUCT_ID),LISTAGG (PRODUCT_ID,',') 
+    FROM customer_budget C
+    INNER JOIN (SELECT PRODUCT_ID,SUM (COST) OVER (ORDER BY COST) RUNN_SUM FROM PRODUCTS) P
+    ON C.BUDGET>P.RUNN_SUM
+    GROUP BY CUSTOMER_ID,BUDGET;
